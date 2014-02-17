@@ -1,0 +1,25 @@
+--- Python-2.7.5/Lib/platform.py.orig	2014-02-17 11:51:59.368723251 +0400
++++ Python-2.7.5/Lib/platform.py	2014-02-17 11:37:01.505056258 +0400
+@@ -113,7 +113,7 @@
+ 
+ __version__ = '1.0.7'
+ 
+-import sys,string,os,re
++import sys,string,os,re,errno
+ 
+ ### Globals & Constants
+ 
+@@ -1009,7 +1009,12 @@
+     except (AttributeError,os.error):
+         return default
+     output = string.strip(f.read())
+-    rc = f.close()
++    try:
++        rc = f.close()
++    except IOError as exc:
++        if exc.errno != errno.ECHILD:
++            raise
++        rc = 0
+     if not output or rc:
+         return default
+     else:

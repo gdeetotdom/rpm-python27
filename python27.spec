@@ -2,7 +2,8 @@
 #
 # sudo yum -y install rpmdevtools && rpmdev-setuptree
 # sudo yum -y install tk-devel tcl-devel expat-devel db4-devel gdbm-devel sqlite-devel bzip2-devel openssl-devel ncurses-devel readline-devel
-# wget https://raw.github.com/nmilford/rpm-python27/master/python27.spec -O ~/rpmbuild/SPECS/python27.spec
+# wget https://raw.github.com/gdeetotdom/rpm-python27/master/python27.spec -O ~/rpmbuild/SPECS/python27.spec
+# wget https://raw.github.com/gdeetotdom/rpm-python27/master/python-platform.patch -O ~/rpmbuild/SOURCES/python-platform.patch
 # wget http://www.python.org/ftp/python/2.7.5/Python-2.7.5.tar.bz2 -O ~/rpmbuild/SOURCES/Python-2.7.5.tar.bz2
 # QA_RPATHS=$[ 0x0001|0x0010 ] rpmbuild -bb ~/rpmbuild/SPECS/python27.spec
 
@@ -55,7 +56,7 @@
 %define version 2.7.5
 %define libvers 2.7
 #--end constants--
-%define release 1
+%define release 2
 %define __prefix /usr
 
 #  kludge to get around rpm <percent>define weirdness
@@ -83,6 +84,7 @@ Source: Python-%{version}.tar.bz2
 %if %{include_docs}
 Source1: %{name}-%{version}-docs-html.tar.bz2
 %endif
+Patch1: python-platform.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: gcc make expat-devel db4-devel gdbm-devel sqlite-devel readline-devel zlib-devel bzip2-devel openssl-devel
 AutoReq: no
@@ -248,6 +250,7 @@ formats.
 #######
 %prep
 %setup -n Python-%{version}
+%patch1 -p1
 
 ########
 #  BUILD
